@@ -432,11 +432,8 @@ CMakeFiles/exercise_1.dir/ex1.cpp.o: /home/ryotok/Documents/TUM/SS23/CVII/progra
   /usr/include/c++/12.2.1/bits/codecvt.h \
   /usr/include/c++/12.2.1/bits/locale_facets_nonio.tcc \
   /usr/include/c++/12.2.1/bits/locale_conv.h \
-  /usr/include/c++/12.2.1/bits/quoted_string.h \
-  /home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1/Config.h
+  /usr/include/c++/12.2.1/bits/quoted_string.h
 
-
-/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1/Config.h:
 
 /usr/include/c++/12.2.1/bits/locale_conv.h:
 

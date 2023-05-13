@@ -11,7 +11,6 @@
 #define DEGENERATE "DEGENERATE"
 #define PRINT "PRINT"
 
-#include "Config.h"
 
 struct mat_entry{
     Eigen::Index row;
@@ -133,7 +132,7 @@ std::string DEGENERATE_checker(Matrix * matrix, bool final_check){
         row_max.value = matrix->mat.row(i).maxCoeff(&row_max.col);
         if(row_max.value == 0){
             if(row_max.row != matrix->dim-1 && final_check){
-                matrix->swap(++i, row_max.row);
+                matrix->swap(row_max.row, ++i);
             }
             ans = DEGENERATE;
             break;
@@ -183,18 +182,15 @@ std::string Gauss_elimination(Matrix * matrix){
                 abs_max.row = row;
             }
 
-            #ifdef DEBUG
-                std::cout<<"maximum_row: "<<abs_max.row<<std::endl;
-            #endif
-
             if (abs_max.value == 0){
-                ans = DEGENERATE_checker(matrix, false);
+                if(row == matrix->dim-1){
+                    ans = DEGENERATE_checker(matrix, true);
+                }else{
+                    ans = DEGENERATE_checker(matrix, false);
+                }
                 if(ans == DEGENERATE){
                     break;
                 }else{
-                    #ifdef DEBUG
-                        matrix->print(PRINT);
-                    #endif
                     // row++;
                     col++;
                     continue;
@@ -218,9 +214,9 @@ std::string Gauss_elimination(Matrix * matrix){
                     }
                 }
             }
-            #ifdef DEBUG
-                matrix->print(PRINT);
-            #endif
+            // // #ifdef DEBUG
+            // matrix->print(PRINT);
+            // // #endif
             row++;
             col++;
     }

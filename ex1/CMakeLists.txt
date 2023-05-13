@@ -5,14 +5,17 @@ project(exercise_1)
 # Options
 set(LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Libs CACHE PATH "Path to lib folder")
 set(Eigen3_DIR ${LIBRARY_DIR}/Eigen/cmake CACHE PATH "Path to installed Eigen")
-
 # #cmake .. -DDEBUG=ON  
-option(DEBUG "Use" OFF)
+# option(DEBUG "Use" ON)
+# option(EX1 "exercise_1-1" OFF)
+# option(EX2 "exercise_1-1" OFF)
 
 configure_file(Config.h.in ${PROJECT_SOURCE_DIR}/Config.h)
 
 set(CMAKE_CXX_STANDARD 14)
 
+
+# set(SOURCES ex1.cpp)
 set(SOURCES ex1.cpp)
 
 find_package(Eigen3 REQUIRED)

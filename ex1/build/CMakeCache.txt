@@ -22,7 +22,7 @@ CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
-CMAKE_BUILD_TYPE:STRING=
+CMAKE_BUILD_TYPE:STRING=Debug
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
@@ -212,11 +212,8 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//Use
-DEBUG:BOOL=OFF
-
 //No help, variable specified on the command line.
-EBUG:UNINITIALIZED=OFF
+DEBUG:UNINITIALIZED=ON
 
 //The directory containing a CMake configuration file for Eigen3.
 Eigen3_DIR:PATH=/usr/local/share/eigen3/cmake
@@ -232,6 +229,15 @@ exercise_1_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 exercise_1_SOURCE_DIR:STATIC=/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1
+
+//Value Computed by CMake
+exercise_2_BINARY_DIR:STATIC=/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1/build
+
+//Value Computed by CMake
+exercise_2_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+exercise_2_SOURCE_DIR:STATIC=/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1
 
 
 ########################
