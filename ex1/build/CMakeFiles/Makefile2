@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/exercise_1.dir/all
+all: CMakeFiles/exercise_2.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/exercise_1.dir/clean
+clean: CMakeFiles/exercise_2.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/exercise_1.dir
+# Target rules for target CMakeFiles/exercise_2.dir
 
 # All Build rule for target.
-CMakeFiles/exercise_1.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_1.dir/build.make CMakeFiles/exercise_1.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_1.dir/build.make CMakeFiles/exercise_1.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1/build/CMakeFiles --progress-num=1,2 "Built target exercise_1"
-.PHONY : CMakeFiles/exercise_1.dir/all
+CMakeFiles/exercise_2.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_2.dir/build.make CMakeFiles/exercise_2.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_2.dir/build.make CMakeFiles/exercise_2.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1/build/CMakeFiles --progress-num=1,2 "Built target exercise_2"
+.PHONY : CMakeFiles/exercise_2.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/exercise_1.dir/rule: cmake_check_build_system
+CMakeFiles/exercise_2.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/exercise_1.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/exercise_2.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex1/build/CMakeFiles 0
-.PHONY : CMakeFiles/exercise_1.dir/rule
+.PHONY : CMakeFiles/exercise_2.dir/rule
 
 # Convenience name for target.
-exercise_1: CMakeFiles/exercise_1.dir/rule
-.PHONY : exercise_1
+exercise_2: CMakeFiles/exercise_2.dir/rule
+.PHONY : exercise_2
 
 # clean rule for target.
-CMakeFiles/exercise_1.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_1.dir/build.make CMakeFiles/exercise_1.dir/clean
-.PHONY : CMakeFiles/exercise_1.dir/clean
+CMakeFiles/exercise_2.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_2.dir/build.make CMakeFiles/exercise_2.dir/clean
+.PHONY : CMakeFiles/exercise_2.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

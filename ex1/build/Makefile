@@ -117,41 +117,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named exercise_1
+# Target rules for targets named exercise_2
 
 # Build rule for target.
-exercise_1: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 exercise_1
-.PHONY : exercise_1
+exercise_2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 exercise_2
+.PHONY : exercise_2
 
 # fast build rule for target.
-exercise_1/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_1.dir/build.make CMakeFiles/exercise_1.dir/build
-.PHONY : exercise_1/fast
+exercise_2/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_2.dir/build.make CMakeFiles/exercise_2.dir/build
+.PHONY : exercise_2/fast
 
-ex1.o: ex1.cpp.o
-.PHONY : ex1.o
+ex2.o: ex2.cpp.o
+.PHONY : ex2.o
 
 # target to build an object file
-ex1.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_1.dir/build.make CMakeFiles/exercise_1.dir/ex1.cpp.o
-.PHONY : ex1.cpp.o
+ex2.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_2.dir/build.make CMakeFiles/exercise_2.dir/ex2.cpp.o
+.PHONY : ex2.cpp.o
 
-ex1.i: ex1.cpp.i
-.PHONY : ex1.i
+ex2.i: ex2.cpp.i
+.PHONY : ex2.i
 
 # target to preprocess a source file
-ex1.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_1.dir/build.make CMakeFiles/exercise_1.dir/ex1.cpp.i
-.PHONY : ex1.cpp.i
+ex2.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_2.dir/build.make CMakeFiles/exercise_2.dir/ex2.cpp.i
+.PHONY : ex2.cpp.i
 
-ex1.s: ex1.cpp.s
-.PHONY : ex1.s
+ex2.s: ex2.cpp.s
+.PHONY : ex2.s
 
 # target to generate assembly for a file
-ex1.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_1.dir/build.make CMakeFiles/exercise_1.dir/ex1.cpp.s
-.PHONY : ex1.cpp.s
+ex2.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_2.dir/build.make CMakeFiles/exercise_2.dir/ex2.cpp.s
+.PHONY : ex2.cpp.s
 
 # Help Target
 help:
@@ -161,10 +161,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... exercise_1"
-	@echo "... ex1.o"
-	@echo "... ex1.i"
-	@echo "... ex1.s"
+	@echo "... exercise_2"
+	@echo "... ex2.o"
+	@echo "... ex2.i"
+	@echo "... ex2.s"
 .PHONY : help
 
 

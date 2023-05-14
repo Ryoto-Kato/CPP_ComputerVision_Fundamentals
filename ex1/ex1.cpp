@@ -15,18 +15,18 @@
 struct mat_entry{
     Eigen::Index row;
     Eigen::Index col;
-    double value;
+    long double value;
 };
 
 class Matrix{
 
 public:
-    int dim;
+    Eigen::Index dim;
     Eigen::MatrixXd mat;
     Eigen::MatrixXd identity;
     bool trans = false;
 
-    Matrix(int d): dim(d){
+    Matrix(Eigen::Index d): dim(d){
         mat = Eigen::MatrixXd::Zero(d, d);
         identity = Eigen::MatrixXd::Identity(d, d);
     }
@@ -42,18 +42,18 @@ public:
         base_swap(this->identity, i, j, false);
     }
 
-    void mul(Eigen::Index & index, double & scalar){
+    void mul(Eigen::Index & index, long double & scalar){
         base_mul(this->mat, index, scalar, true);
         base_mul(this->identity, index, scalar, false);
     }
 
 
-    void add(Eigen::Index & i, Eigen::Index & j, double & scalar){
+    void add(Eigen::Index & i, Eigen::Index & j, long double & scalar){
         base_add(this->mat, i, j, scalar, true);
         base_add(this->identity, i, j, scalar, false);
     }
 
-    void insert(int i, int j, double value){
+    void insert(Eigen::Index i, Eigen::Index j, long double value){
         mat(i,j) = value;
     }
 
@@ -65,20 +65,21 @@ public:
         Eigen::VectorXd temp = matrix.row(index_j);
         matrix.row(index_j) =  matrix.row(index_i);
         matrix.row(index_i) =  temp;
-        if (print){
+        if (print && index_i != index_j){
             std::cout<<SWAP<<" "<<index_i<<" "<<index_j<<std::endl;
         }
     }
 
-    static void base_mul(Eigen::MatrixXd & matrix, Eigen::Index & index, double & scalar, bool print){
+    static void base_mul(Eigen::MatrixXd & matrix, Eigen::Index & index, long double & scalar, bool print){
         matrix.row(index) *= scalar;
         if(print){
             std::cout<<MUL<<" "<<index<<" "<<scalar<<std::endl;
         }
     }
 
-    static void base_add(Eigen::MatrixXd & matrix, Eigen::Index & index_i, Eigen::Index & index_j, double & scalar, bool print){
+    static void base_add(Eigen::MatrixXd & matrix, Eigen::Index & index_i, Eigen::Index & index_j, long double & scalar, bool print){
         matrix.row(index_i) = matrix.row(index_i) + matrix.row(index_j) * scalar;
+        Eigen::Index end_row = matrix.rows()-1;
         if(print){
             std::cout<<ADD<<" "<<index_i<<" "<<index_j<<" "<<scalar<<std::endl;
         }
@@ -109,13 +110,13 @@ public:
 };
 
 Matrix input_manager(){
-    int _matrix_dimension;
+    Eigen::Index _matrix_dimension;
     std::cin>>_matrix_dimension;
     Matrix matrix = {_matrix_dimension};
-    int dim = matrix.__dimension__();
-    double copy = 0.0;
-    for(int i=0; i<dim; i++){
-        for(int j=0; j<dim; j++){
+    Eigen::Index dim = matrix.__dimension__();
+    long double copy = 0.0;
+    for(Eigen::Index  i=0; i<dim; i++){
+        for(Eigen::Index  j=0; j<dim; j++){
             std::cin>>copy;
             matrix.insert(i, j, copy);
         }
@@ -123,17 +124,26 @@ Matrix input_manager(){
     return matrix;
 }
 
-std::string DEGENERATE_checker(Matrix * matrix, bool final_check){
+std::string DEGENERATE_checker(Matrix * matrix){
     mat_entry row_max;
     std::string ans = SOLUTION;
+    Eigen::Index dim = matrix->dim;
+    mat_entry rest_nonzero;
 
-    for(Eigen::Index i = 0; i<matrix->dim; i++){
+    for(Eigen::Index i = 0; i<dim; i++){
         row_max.row = i;
         row_max.value = matrix->mat.row(i).maxCoeff(&row_max.col);
         if(row_max.value == 0){
-            if(row_max.row != matrix->dim-1 && final_check){
-                matrix->swap(row_max.row, ++i);
-            }
+            // if(row_max.row < dim-1){
+            //     Eigen::Index end_row = dim-1;
+            //     for(Eigen::Index j = i+1; j<dim; j++){
+            //         rest_nonzero.row = j;
+            //         rest_nonzero.value = matrix->mat.row(j).maxCoeff(&rest_nonzero.col);
+            //         if(rest_nonzero.value != 0){
+            //             matrix->swap(i, j);
+            //         }
+            //     }
+            // }
             ans = DEGENERATE;
             break;
         }
@@ -144,33 +154,30 @@ std::string DEGENERATE_checker(Matrix * matrix, bool final_check){
 
 std::string Gauss_elimination(Matrix * matrix){
 
-    double one = 1.0;
-    double zero = 0.0;
-    int dim = matrix->dim;
-    double scaler = 0.0;
+    // Eigen::Index dim = matrix->dim;
+
+    // long double one = 0.0;
     mat_entry max;
     mat_entry min;
+    mat_entry row_max;
     mat_entry abs_max;
     Eigen::Index row = 0;
     Eigen::Index col = 0;
-    Eigen::Index max_row_index = dim-1;
     std::string ans;
 
-    while(row<matrix->dim && col<matrix->dim){
+    ans = DEGENERATE_checker(matrix);
+    if(ans == DEGENERATE){
+        return ans;
+    }
 
+    while(row<matrix->dim && col<matrix->dim){
             max.col = col;
             min.col = col;
-            Eigen::VectorXd target_row = matrix->mat.block(row, col, matrix->dim-row, 1);
-            #ifdef DEBUG
-            std::cout<<"target_row"<<std::endl;
-            std::cout<<target_row<<std::endl;
-            std::cout<<std::endl;
-            #endif
-            max.value = target_row.maxCoeff(&max.row);
+            Eigen::VectorXd target_col = matrix->mat.block(row, col, matrix->dim-row, 1);
+            max.value = target_col.maxCoeff(&max.row);
             max.row +=row;
-            min.value = target_row.minCoeff(&min.row);
+            min.value = target_col.minCoeff(&min.row);
             min.row +=row;
-
 
             if(std::abs(max.value) >= std::abs(min.value)){
                 abs_max = max;
@@ -182,46 +189,45 @@ std::string Gauss_elimination(Matrix * matrix){
                 abs_max.row = row;
             }
 
-            if (abs_max.value == 0){
-                if(row == matrix->dim-1){
-                    ans = DEGENERATE_checker(matrix, true);
-                }else{
-                    ans = DEGENERATE_checker(matrix, false);
-                }
-                if(ans == DEGENERATE){
-                    break;
-                }else{
-                    // row++;
-                    col++;
-                    continue;
-                }
+            row_max.row = row;
+            row_max.value = matrix->mat.row(row_max.row).maxCoeff(&row_max.col);
+
+            if(abs_max.value == 0 && row_max.value == 0){
+                row++;
+                col++;
+                continue;
+            }
+
+            if(abs_max.value == 0){
+                // row++;
+                col++;
+                continue;
             }else{
                 if(matrix->mat(row, col) == 0){
-                    matrix->swap(row, abs_max.row);
-                    // continue;
+                    matrix->swap(row_max.row, abs_max.row);
                 }
+                
                 if(matrix->mat(row, col) !=1){
-                    double factor = 1/matrix->mat(row, col);
+                    long double factor = 1/matrix->mat(row, col);
                     matrix->mul(row, factor);
                 }
 
+                // matrix->swap(row, abs_max.row);
                 for(Eigen::Index i = 0; i<matrix->dim; i++){
                     if(matrix->mat(i, col) == 0 || i == row){
                         continue;
                     }else{
-                        double scalar = (-1) * matrix->mat(i, col) / matrix->mat(row, col);
+                        long double scalar = (-1) * matrix->mat(i, col) / matrix->mat(row, col);
+                        // matrix->mat(i, col) = 0;
                         matrix->add(i, row, scalar);
                     }
                 }
+                row++;
+                col++;
             }
-            // // #ifdef DEBUG
-            // matrix->print(PRINT);
-            // // #endif
-            row++;
-            col++;
     }
 
-    ans = DEGENERATE_checker(matrix, true);
+    ans = DEGENERATE_checker(matrix);
 
     return ans;
 }
