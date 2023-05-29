@@ -8,6 +8,7 @@ CMakeFiles/exercise_2.dir/ex1.cpp.o: \
  /usr/include/sys/cdefs.h /usr/include/bits/long-double.h \
  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \
  /usr/include/c++/12.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+ /usr/include/c++/12.2.1/pstl/pstl_config.h \
  /usr/include/c++/12.2.1/ostream /usr/include/c++/12.2.1/ios \
  /usr/include/c++/12.2.1/iosfwd /usr/include/c++/12.2.1/bits/stringfwd.h \
  /usr/include/c++/12.2.1/bits/memoryfwd.h \
@@ -93,6 +94,9 @@ CMakeFiles/exercise_2.dir/ex1.cpp.o: \
  /usr/include/c++/12.2.1/ext/alloc_traits.h \
  /usr/include/c++/12.2.1/bits/alloc_traits.h \
  /usr/include/c++/12.2.1/bits/stl_construct.h \
+ /usr/include/c++/12.2.1/string_view \
+ /usr/include/c++/12.2.1/bits/functional_hash.h \
+ /usr/include/c++/12.2.1/bits/string_view.tcc \
  /usr/include/c++/12.2.1/ext/string_conversions.h \
  /usr/include/c++/12.2.1/cstdlib /usr/include/stdlib.h \
  /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
@@ -111,7 +115,6 @@ CMakeFiles/exercise_2.dir/ex1.cpp.o: \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/bits/types/error_t.h \
  /usr/include/c++/12.2.1/bits/charconv.h \
- /usr/include/c++/12.2.1/bits/functional_hash.h \
  /usr/include/c++/12.2.1/bits/basic_string.tcc \
  /usr/include/c++/12.2.1/bits/locale_classes.tcc \
  /usr/include/c++/12.2.1/system_error \
@@ -139,7 +142,19 @@ CMakeFiles/exercise_2.dir/ex1.cpp.o: \
  /usr/include/bits/fp-fast.h \
  /usr/include/bits/mathcalls-helper-functions.h \
  /usr/include/bits/mathcalls.h /usr/include/bits/mathcalls-narrow.h \
- /usr/include/bits/iscanonical.h \
+ /usr/include/bits/iscanonical.h /usr/include/c++/12.2.1/bits/specfun.h \
+ /usr/include/c++/12.2.1/limits /usr/include/c++/12.2.1/tr1/gamma.tcc \
+ /usr/include/c++/12.2.1/tr1/special_function_util.h \
+ /usr/include/c++/12.2.1/tr1/bessel_function.tcc \
+ /usr/include/c++/12.2.1/tr1/beta_function.tcc \
+ /usr/include/c++/12.2.1/tr1/ell_integral.tcc \
+ /usr/include/c++/12.2.1/tr1/exp_integral.tcc \
+ /usr/include/c++/12.2.1/tr1/hypergeometric.tcc \
+ /usr/include/c++/12.2.1/tr1/legendre_function.tcc \
+ /usr/include/c++/12.2.1/tr1/modified_bessel_func.tcc \
+ /usr/include/c++/12.2.1/tr1/poly_hermite.tcc \
+ /usr/include/c++/12.2.1/tr1/poly_laguerre.tcc \
+ /usr/include/c++/12.2.1/tr1/riemann_zeta.tcc \
  /usr/local/include/eigen3/Eigen/src/Core/util/ConfigureVectorization.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/12.2.1/include/mmintrin.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/12.2.1/include/emmintrin.h \
@@ -153,21 +168,33 @@ CMakeFiles/exercise_2.dir/ex1.cpp.o: \
  /usr/include/c++/12.2.1/tuple \
  /usr/include/c++/12.2.1/bits/uses_allocator.h \
  /usr/include/c++/12.2.1/bits/std_function.h \
+ /usr/include/c++/12.2.1/unordered_map \
+ /usr/include/c++/12.2.1/ext/aligned_buffer.h \
+ /usr/include/c++/12.2.1/bits/hashtable.h \
+ /usr/include/c++/12.2.1/bits/hashtable_policy.h \
+ /usr/include/c++/12.2.1/bits/enable_special_members.h \
+ /usr/include/c++/12.2.1/bits/node_handle.h \
+ /usr/include/c++/12.2.1/bits/unordered_map.h \
+ /usr/include/c++/12.2.1/bits/erase_if.h /usr/include/c++/12.2.1/vector \
+ /usr/include/c++/12.2.1/bits/stl_uninitialized.h \
+ /usr/include/c++/12.2.1/bits/stl_vector.h \
+ /usr/include/c++/12.2.1/bits/stl_bvector.h \
+ /usr/include/c++/12.2.1/bits/vector.tcc /usr/include/c++/12.2.1/array \
+ /usr/include/c++/12.2.1/compare /usr/include/c++/12.2.1/bits/stl_algo.h \
+ /usr/include/c++/12.2.1/bits/algorithmfwd.h \
+ /usr/include/c++/12.2.1/bits/stl_heap.h \
+ /usr/include/c++/12.2.1/bits/stl_tempbuf.h \
+ /usr/include/c++/12.2.1/bits/uniform_int_dist.h \
  /usr/include/c++/12.2.1/cstring /usr/include/string.h \
- /usr/include/strings.h /usr/include/c++/12.2.1/limits \
- /usr/include/c++/12.2.1/climits \
+ /usr/include/strings.h /usr/include/c++/12.2.1/climits \
  /usr/lib/gcc/x86_64-pc-linux-gnu/12.2.1/include-fixed/limits.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/12.2.1/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
  /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
  /usr/include/bits/uio_lim.h /usr/include/c++/12.2.1/algorithm \
- /usr/include/c++/12.2.1/bits/stl_algo.h \
- /usr/include/c++/12.2.1/bits/algorithmfwd.h \
- /usr/include/c++/12.2.1/bits/stl_heap.h \
- /usr/include/c++/12.2.1/bits/stl_tempbuf.h \
- /usr/include/c++/12.2.1/bits/uniform_int_dist.h \
- /usr/include/c++/12.2.1/array /usr/include/c++/12.2.1/compare \
+ /usr/include/c++/12.2.1/pstl/glue_algorithm_defs.h \
+ /usr/include/c++/12.2.1/pstl/execution_defs.h \
  /usr/local/include/eigen3/Eigen/src/Core/util/Constants.h \
  /usr/local/include/eigen3/Eigen/src/Core/util/Meta.h \
  /usr/local/include/eigen3/Eigen/src/Core/util/ForwardDeclarations.h \
@@ -363,4 +390,15 @@ CMakeFiles/exercise_2.dir/ex1.cpp.o: \
  /usr/include/libintl.h /usr/include/c++/12.2.1/bits/codecvt.h \
  /usr/include/c++/12.2.1/bits/locale_facets_nonio.tcc \
  /usr/include/c++/12.2.1/bits/locale_conv.h \
- /usr/include/c++/12.2.1/bits/quoted_string.h
+ /usr/include/c++/12.2.1/bits/quoted_string.h \
+ /usr/include/c++/12.2.1/memory \
+ /usr/include/c++/12.2.1/bits/stl_raw_storage_iter.h \
+ /usr/include/c++/12.2.1/bits/align.h /usr/include/c++/12.2.1/bit \
+ /usr/include/c++/12.2.1/bits/unique_ptr.h \
+ /usr/include/c++/12.2.1/bits/shared_ptr.h \
+ /usr/include/c++/12.2.1/bits/shared_ptr_base.h \
+ /usr/include/c++/12.2.1/bits/allocated_ptr.h \
+ /usr/include/c++/12.2.1/ext/concurrence.h \
+ /usr/include/c++/12.2.1/bits/shared_ptr_atomic.h \
+ /usr/include/c++/12.2.1/backward/auto_ptr.h \
+ /usr/include/c++/12.2.1/pstl/glue_memory_defs.h

@@ -12,7 +12,7 @@ option(DEBUG "Use" OFF)
 
 configure_file(Config.h.in ${PROJECT_SOURCE_DIR}/Config.h)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 
 # set(SOURCES ex1.cpp)

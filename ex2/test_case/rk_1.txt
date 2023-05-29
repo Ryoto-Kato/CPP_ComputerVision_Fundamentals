@@ -1,0 +1,72 @@
+Input camera0 parameters....
+--------------pinhole----------------
+Parameters
+Image plane size: 
+(width, height, ratio) = (1280,720,1.77778)
+
+Intrinsic Parameters
+focal_x: 448
+focal_y: 448
+center_x: 640
+center_y: 360
+omega: -1
+
+intrinsic matrix
+448   0 640
+  0 448 360
+  0   0   1
+----------------------------------------
+Input camera1 parameters....
+--------------fov----------------
+Parameters
+Image plane size: 
+(width, height, ratio) = (1280,720,1.77778)
+
+Intrinsic Parameters
+focal_x: 448
+focal_y: 448
+center_x: 640
+center_y: 360
+omega: 1.1
+
+intrinsic matrix
+448   0 640
+  0 448 360
+  0   0   1
+----------------------------------------
+rotation matrix
+ 1  0  0 -2
+ 0  1  0  3
+ 0  0  1  4
+input point on camera 1 image plane
+u, v, depth =500,500,22
+input point on camera 1 image plane
+u, v, depth =500,400,13
+input point on camera 1 image plane
+u, v, depth =300,500.6,0.5
+input point on camera 1 image plane
+u, v, depth =120,80,1
+input point on camera 1 image plane
+u, v, depth =909,105,1
+input point on camera 1 image plane
+u, v, depth =10.1,300,2
+input point on camera 1 image plane
+u, v, depth =200,700,3
+input point on camera 1 image plane
+u, v, depth =800,300,4
+input point on camera 1 image plane
+u, v, depth =200,100,5
+coordinates in cam1
+u, v, depth =-0.3125,0.3125,22
+u, v, depth =-0.3125,0.0892857,13
+u, v, depth =-0.758929,0.313839,0.5
+u, v, depth =-1.16071,-0.625,1
+u, v, depth =0.600446,-0.569196,1
+u, v, depth =-1.40603,-0.133929,2
+u, v, depth =-0.982143,0.758929,3
+u, v, depth =0.357143,-0.133929,4
+u, v, depth =-0.982143,-0.580357,5
+Points in camera 1 coordinate
+  -0.3125   -0.3125 -0.758929  -1.16071  0.600446  -1.40603 -0.982143  0.357143 -0.982143
+   0.3125 0.0892857  0.313839    -0.625 -0.569196 -0.133929  0.758929 -0.133929 -0.580357
+       22        13       0.5         1         1         2         3         4         5

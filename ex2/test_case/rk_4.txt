@@ -1,0 +1,116 @@
+Input camera0 parameters....
+--------------fov----------------
+Parameters
+Image plane size: 
+(width, height, ratio) = (1280,720,1.77778)
+
+Intrinsic Parameters
+focal_x: 413
+focal_y: 555
+center_x: 640
+center_y: 360
+omega: 1
+
+intrinsic matrix
+413   0 640
+  0 555 360
+  0   0   1
+----------------------------------------
+Input camera1 parameters....
+--------------fov----------------
+Parameters
+Image plane size: 
+(width, height, ratio) = (1280,720,1.77778)
+
+Intrinsic Parameters
+focal_x: 413
+focal_y: 555
+center_x: 640
+center_y: 360
+omega: 1.1
+
+intrinsic matrix
+413   0 640
+  0 555 360
+  0   0   1
+----------------------------------------
+rotation matrix
+1 0 0 0
+0 1 0 0
+0 0 1 0
+input point on camera 1 image plane
+u, v, depth =500,500,22
+input point on camera 1 image plane
+u, v, depth =500,400,13
+input point on camera 1 image plane
+u, v, depth =300,500,0.5
+input point on camera 1 image plane
+u, v, depth =120,80,1
+input point on camera 1 image plane
+u, v, depth =909,105,1
+input point on camera 1 image plane
+u, v, depth =10,300,2
+input point on camera 1 image plane
+u, v, depth =200,700,3
+input point on camera 1 image plane
+u, v, depth =800,300,4
+input point on camera 1 image plane
+u, v, depth =200,100,5
+u, v, depth =500,500,22
+Back-projection: x,y,z,w =-7.26303,5.40474,22,1
+u, v, depth =500,400,13
+Back-projection: x,y,z,w =-4.2029,0.89359,13,1
+u, v, depth =300,500,0.5
+Back-projection: x,y,z,w =-0.509284,0.156051,0.5,1
+u, v, depth =120,80,1
+Back-projection: x,y,z,w =-3.90166,-1.56337,1,1
+u, v, depth =909,105,1
+Back-projection: x,y,z,w =0.76557,-0.540045,1,1
+u, v, depth =10,300,2
+Back-projection: x,y,z,w =-43.9232,-3.11288,2,1
+u, v, depth =200,700,3
+Back-projection: x,y,z,w =-6.68963,3.84667,3,1
+u, v, depth =800,300,4
+Back-projection: x,y,z,w =1.50007,-0.418601,4,1
+u, v, depth =200,100,5
+Back-projection: x,y,z,w =-9.71871,-4.27353,5,1
+3Dpoint matrix
+ -7.26303   -4.2029 -0.509284  -3.90166   0.76557  -43.9232  -6.68963   1.50007  -9.71871
+  5.40474   0.89359  0.156051  -1.56337 -0.540045  -3.11288   3.84667 -0.418601  -4.27353
+       22        13       0.5         1         1         2         3         4         5
+        1         1         1         1         1         1         1         1         1
+Transformation matrix
+1 0 0 0
+0 1 0 0
+0 0 1 0
+points in camera 2 space
+ -7.26303   -4.2029 -0.509284  -3.90166   0.76557  -43.9232  -6.68963   1.50007  -9.71871
+  5.40474   0.89359  0.156051  -1.56337 -0.540045  -3.11288   3.84667 -0.418601  -4.27353
+       22        13       0.5         1         1         2         3         4         5
+distortion coefficient
+1.03238
+distortion coefficient
+1.05909
+distortion coefficient
+0.782899
+distortion coefficient
+0.29829
+distortion coefficient
+0.829194
+distortion coefficient
+0.063331
+distortion coefficient
+0.446647
+distortion coefficient
+1.04002
+distortion coefficient
+0.51552
+u, v, depth =780.762,219.238,22
+u, v, depth =781.413,319.596,13
+u, v, depth =969.341,224.389,0.5
+u, v, depth =1120.66,618.817,1
+u, v, depth =377.825,608.53,1
+u, v, depth =1214.42,414.707,2
+u, v, depth =1051.33,42.1504,3
+u, v, depth =478.919,420.405,4
+u, v, depth =1053.84,604.543,5
