@@ -6,14 +6,6 @@
 #include <vector>
 #include <memory>
 
-#define SWAP 'S'
-#define MUL 'M'
-#define ADD 'A'
-#define SOLUTION "SOLUTION"
-#define DEGENERATE "DEGENERATE"
-#define PRINT "PRINT"
-
-
 class Point3D{
 public:
     double x;
@@ -30,7 +22,7 @@ public:
     }
 
     double norm(){
-        double _norm = std::sqrt((x*x+y*y)/(z*z));
+        double _norm = std::sqrt((x*x+y*y+z*z));
         return _norm;
     }
 
@@ -47,7 +39,7 @@ public:
     ~Point2D(){}
 
     void print(){
-        std::cout<<"u, v, depth ="<<x<<","<<y<<","<<depth<<std::endl;
+        std::cout<<std::right<<x<<" "<<y<<" "<<std::endl;
     }
 
     double norm(){
@@ -72,11 +64,6 @@ void input_line2mat(std::vector<Point2D> & points_f1){
         copy.push_back(line[i]);
         if((i+1)%3 == 0){
             Point2D _point_f1 = {copy[0], copy[1], copy[2]};
-            // input pixel coordinate (u, v) is a generic coordinate,
-            // hence we need to multiply with depth to
-            std::cout<<"input point on camera 1 image plane"<<std::endl;
-            _point_f1.print();
-            // obtain non-generic coordinate on image plane of cam2
             points_f1.push_back(_point_f1);
             copy.erase(copy.begin(), copy.end());
         }
@@ -181,8 +168,6 @@ double inline ptam(Point2D & coord_2d, double omega){
     long double result = 0.0;
     double _norm = coord_2d.norm();
     result = (1/(omega*_norm))*atan(2*_norm*tan(omega/2));
-    std::cout<<"distortion coefficient"<<std::endl;
-    std::cout<<result<<std::endl;
     return result;
 }
 
@@ -203,24 +188,37 @@ Point3D backprojection(Point2D & _2d, const Camera * cam){
         // _2d.x /= _dist_coeff;
         // _2d.y /= _dist_coeff;
 
-        Point3D _3d = {(_2d.x - c_x)/f_x, (_2d.y - c_y)/f_y, _2d.depth, 1.0};
+        //_3d.x = x_c * g(r) / z_c
+        //_3d.y = y_c * g(r) / z_c
+        Point3D _3d = {(_2d.x - c_x)/f_x, (_2d.y - c_y)/f_y, 1.0, 1.0};
         Point2D _centralized_2d = {_3d.x, _3d.y, _2d.depth};
         double _instance_norm = _centralized_2d.norm();
+        double _r = ((0.5)*tan(cam->omega * _instance_norm))/tan(cam->omega/2.0);
+        double _ptam = (1/(cam->omega *_r))*atan(2*_r*tan(cam->omega /2));
 
-        double _omega = cam->omega;
-
-        double _norm = (tan(_omega * _instance_norm))/(2.0*tan(_omega/2.0));
-        double _ptam = (1.0/(_omega*_norm))*atan(2.0*_norm*tan(_omega/2.0));
         _3d.x /= _ptam;
         _3d.y /= _ptam;
-        _3d.x *=_2d.depth;
-        _3d.y *=_2d.depth;
+
+        double _3d_point_norm = _3d.norm();
+
+        //_3d.x, _3d.y, _3d.z = x_c, y_c. z_c
+        _3d.z = _2d.depth/_3d_point_norm;
+        _3d.x *= _3d.z;
+        _3d.y *= _3d.z;
+
         // Point3D _3d = {(_2d.x - c_x)*_2d.depth/f_x*_dist_coeff, (_2d.y - c_y)*_2d.depth/f_y*_dist_coeff, _2d.depth, 1.0};
         _backprojected_point = _3d;
     }else{
-        Point3D _3d = {(_2d.x - c_x)/f_x, (_2d.y - c_y)/f_y, _2d.depth, 1.0};
-        _3d.x *=_2d.depth;
-        _3d.y *=_2d.depth;
+        //_3d.x = x_c / z_c
+        //_3d.y = y_c / z_c
+        Point3D _3d = {(_2d.x - c_x)/f_x, (_2d.y - c_y)/f_y, 1.0, 1.0};
+
+        double _3d_point_norm = _3d.norm();
+
+        _3d.z = _2d.depth/_3d_point_norm;
+        _3d.x *=_3d.z;
+        _3d.y *=_3d.z;
+
         _backprojected_point = _3d;
     }
 
@@ -250,11 +248,6 @@ std::vector<Point2D> transform_c1_c2(std::vector<Point3D> & coords_list, Eigen::
 
     translation_mat.block(0, 3, 3, 1) = rt_mat.block(0,3,3,1);
 
-    std::cout<<"rotation matrix"<<std::endl;
-    std::cout<<rotation_mat<<std::endl;
-
-    std::cout<<"translation matrix"<<std::endl;
-    std::cout<<translation_mat<<std::endl;
     //points matrix
     //no need to be transposed
     Eigen::MatrixXd points_in_c1(row, col); //shape = [4, col]
@@ -266,22 +259,9 @@ std::vector<Point2D> transform_c1_c2(std::vector<Point3D> & coords_list, Eigen::
             points_in_c1(3,i) = 1.0;
     }
 
-    std::cout<<"3Dpoint matrix"<<std::endl;
-    std::cout<<points_in_c1<<std::endl;
-    //Transform the matrix by multiplying the transformation matrix to the point matrix in camera 1 space
-
     Eigen::MatrixXd points_in_c2(4, col);
 
-    std::cout<<"Transformation matrix"<<std::endl;
-    std::cout<<rt_mat<<std::endl;
-
-
-    // transform the cam1 coordinate to cam2 coordinate
-    points_in_c2 = rotation_mat * translation_mat * points_in_c1;
-    std::cout<<"points in camera 2 space"<<std::endl;
-    std::cout<<points_in_c2<<std::endl;
-    // We need to devide x and y by depth as the pinhole model
-    // x_i = f*x_c/z_c from x_i/f = x_c/z_c
+    points_in_c2 = rt_mat * points_in_c1;
 
     std::vector<Point2D> pixel_coords_on_im2;
 
@@ -309,42 +289,7 @@ std::vector<Point2D> transform_c1_c2(std::vector<Point3D> & coords_list, Eigen::
         _point.x = _point.x * cam2->_intrinsic_params._focal.x + cam2->_intrinsic_params._center.x;
         _point.y = _point.y * cam2->_intrinsic_params._focal.y + cam2->_intrinsic_params._center.y;
         pixel_coords_on_im2.push_back(_point);
-        // pixel_coords_on_im2.push_back(_point);
-        // if(cam2->model == "fov"){
-        //     points_in_c2(0, p) *= ptam(_p, cam2->omega);
-        //     points_in_c2(1, p) *= ptam(_p, cam2->omega);
-        // }
     }
-
-    // std::cout<<"After apply, distortion coeff, points in camera 2 space"<<std::endl;
-    // std::cout<<points_in_c2<<std::endl;
-
-    // Eigen::MatrixXd points_on_im2(3, col);
-
-    // // Points cam2 pixel coordinate by applying intrinsic
-    // points_on_im2 = cam2->intrinsic * points_in_c2;
-
-    // std::cout<<"point on cam2 image plane"<<std::endl;
-    // std::cout<<points_on_im2<<std::endl;
-
-    // for(unsigned int i = 0; i<points_on_im2.cols(); i++){
-    //     // points_on_im2(0,i)/=points_on_im2(2, i);
-    //     // points_on_im2(1,i)/=points_on_im2(2, i);
-    //     Point2D _p = {points_on_im2(0, i)-c_x, points_on_im2(1, i)-c_y, points_on_im2(2, i)};
-    //     double distortion_coeff = 1.0;
-    //     if(cam2->model == "fov"){
-    //         distortion_coeff= ptam(_p, cam2->omega);
-    //     }
-    //     Point2D _point = {distortion_coeff*(points_on_im2(0, i)-c_x)+c_x, distortion_coeff*(points_on_im2(1, i)-c_y)+c_y, points_on_im2(2, i)};
-    //     // if(_point.x >= 0 && _point.y >= 0 && _point.x <= cam2->_image_plane_size.width && _point.y <= cam2->_image_plane_size.height){
-    //         pixel_coords_on_im2.push_back(_point);
-    //     // }
-    // }
-
-    // std::cout<<"point pixel coordinate on cam2"<<std::endl;
-    // for(auto & p : pixel_coords_on_im2){
-    //     p.print();
-    // }
 
     return pixel_coords_on_im2;
 }
@@ -364,7 +309,6 @@ int main(int argc, char const *argv[])
 
     // take inputs for camera configurations
     for(int i =0; i<2; i++){
-        std::cout<<"Input camera"<<i<<" parameters...."<<std::endl;
         std::vector<double> camera_params;
         std::cin>>camera_model;
         double copy = 0.0;
@@ -384,7 +328,7 @@ int main(int argc, char const *argv[])
 
         Camera cam = {_id, camera_model,camera_params};
         cameras.push_back(cam);
-        cameras[i].print_params();
+        // cameras[i].print_params();
     }
 
     // take rotation and translation
@@ -398,77 +342,27 @@ int main(int argc, char const *argv[])
         }
     }
 
-    std::cout<<"rotation matrix"<<std::endl;
-    std::cout<<transformation_mat<<std::endl;
 
     std::vector<Point2D> coords_on_im1;
 
     input_line2mat(coords_on_im1);
+    std::vector<Point3D> coords_in_c1;
 
-    std::vector<Point2D> generic_coords_on_im1 = coords_on_im1;
-    Eigen::MatrixXd generic_im1_points = Eigen::MatrixXd::Zero(3, generic_coords_on_im1.size());
+    int counter = 0;
+    for(auto & a : coords_on_im1){
+        Point3D _backprojected_coords = backprojection(a, &cameras[0]);
+        coords_in_c1.push_back(_backprojected_coords);
+        counter++;
+    }
+    std::vector<Point2D> result = transform_c1_c2(coords_in_c1, transformation_mat, &cameras[1]);
 
-    int index =0;
-    for(auto & p : generic_coords_on_im1){
-        p.depth = 1.0;
-        if(cameras[0].model == "fov"){
-            double _dist_coeff = ptam(coords_on_im1[index], cameras[0].omega);
-            p.x /= _dist_coeff;
-            p.y /= _dist_coeff;
+    for(unsigned int i = 0; i<result.size(); i++){
+        if(result[i].depth >= 0 && result[i].x >= 0 && result[i].y >= 0 && result[i].x <= cameras[1]._image_plane_size.width && result[i].y <= cameras[1]._image_plane_size.height){
+            result[i].print();
+        }else{
+           std::cout<<"OB"<<std::endl;
         }
-        index++;
     }
-
-    Eigen::MatrixXd inverse_cam1_intrinsic = cameras[0].intrinsic.inverse();
-    //coordinates in camera 1 space
-
-    for(unsigned int i = 0; i<generic_coords_on_im1.size(); i++){
-            generic_im1_points(0,i) = generic_coords_on_im1[i].x;
-            generic_im1_points(1,i) = generic_coords_on_im1[i].y;
-            generic_im1_points(2,i) = generic_coords_on_im1[i].depth;
-    }
-
-    Eigen::MatrixXd cam1_mat_points = inverse_cam1_intrinsic *  generic_im1_points;
-    std::vector<Point2D> coords_in_cam1;
-
-    Eigen::MatrixXd cam2_mat_points = 
-
-    std::cout<<"coordinates in cam1"<<std::endl;
-    for(unsigned int num_p = 0; num_p < cam1_mat_points.cols(); num_p++){
-        Point2D _p = {cam1_mat_points(0, num_p), cam1_mat_points(1, num_p), cam1_mat_points(2, num_p)};
-        _p.print();
-        coords_in_cam1.push_back(_p);
-    }
-
-    std::cout<<"Points in camera 1 coordinate"<<std::endl;
-    std::cout<<cam1_mat_points<<std::endl;
-
-    
-
-    
-
-    // int counter = 0;
-    // for(auto & a : coords_on_im1){
-    //     a.print();
-    //     std::cout<<"Back-projection: ";
-    //     Point3D _backprojected_coords = backprojection(a, &cameras[0]);
-    //     coords_in_c1.push_back(_backprojected_coords);
-    //     coords_in_c1[counter].print();
-    //     counter++;
-    // }
-
-    //convert
-    // std::vector<Point2D> result = transform_c1_c2(coords_in_c1, transformation_mat, &cameras[1]);
-
-
-
-    // for(unsigned int i = 0; i<result.size(); i++){
-    //     //if(result[i].depth >= 0 && result[i].x >= 0 && result[i].y >= 0 && result[i].x <= cameras[1]._image_plane_size.width && result[i].y <= cameras[1]._image_plane_size.height){
-    //         result[i].print();
-    //     //}else{
-    //     //    std::cout<<"OB"<<std::endl;
-    //     //}
-    // }
 
     return 0;
 }
