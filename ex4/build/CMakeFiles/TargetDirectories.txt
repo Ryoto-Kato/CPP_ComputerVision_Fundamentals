@@ -1,0 +1,3 @@
+/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex4/build/CMakeFiles/exercise_4.dir
+/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex4/build/CMakeFiles/edit_cache.dir
+/home/ryotok/Documents/TUM/SS23/CVII/program-ex/ex4/build/CMakeFiles/rebuild_cache.dir
