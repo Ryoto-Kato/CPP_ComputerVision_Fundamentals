@@ -8,13 +8,8 @@
 #include <iterator>
 #include <map>
 
-#define DEBUG true
+#define DEBUG false
 typedef std::vector<Eigen::MatrixXd> Mats; 
-
-auto print_vect=[](auto const & v){
-    std::copy(v.begin(), v.end(), std::ostream_iterator<int>(std::cout, " "));
-    std::cout<<std::endl;
-};
 
 void comb_01(std::vector<int> & sets, int len, std::vector<int> & a, int n, std::vector<std::vector<int>> & output){
 
@@ -366,7 +361,7 @@ public:
 
 std::vector<bool> flag_corresp(Camera & cam1, Camera & cam2, bool _debug){
     std::vector<bool> flags;
-    std::cout<<"Num of pix coords: "<<cam1.num_pix_coords<<std::endl;
+    // std::cout<<"Num of pix coords: "<<cam1.num_pix_coords<<std::endl;
     for(unsigned int s = 0; s<cam1.num_pix_coords; s++){
         bool _f = true;
         if((cam1.normalized_coords[s].x == -1 && cam1.normalized_coords[s].y == -1) || (cam2.normalized_coords[s].x == -1 && cam2.normalized_coords[s].y == -1)){
@@ -403,7 +398,7 @@ std::vector<bool> flag_3CAM_corresp(std::vector<Camera> & cameras, bool _debug){
 
     unsigned int num_given_corresp = (*cam0).num_pix_coords;
 
-    std::cout<<"Num of pix coords: "<<cameras[0].num_pix_coords<<std::endl;
+    // std::cout<<"Num of pix coords: "<<cameras[0].num_pix_coords<<std::endl;
     for(unsigned int s = 0; s<num_given_corresp; s++){
         bool _f = false;
         if(check_3CAM_corresp(cam0->normalized_coords[s], cam1->normalized_coords[s], cam2->normalized_coords[s])){
@@ -822,7 +817,7 @@ Eigen::MatrixXd kronocker_product(Camera & cam_1, Camera & cam_2, bool _debug){
         }
     }
 
-    std::cout<<"Actual_num_corresp"<<actual_num_corresp<<std::endl;
+    // std::cout<<"Actual_num_corresp"<<actual_num_corresp<<std::endl;
 
     std::vector<Point2D>::iterator id_1 = cam_1.normalized_coords.begin();
     std::vector<Point2D>::iterator id_2 = cam_2.normalized_coords.begin();
@@ -870,7 +865,7 @@ Eigen::MatrixXd kronocker_product(Camera & cam_1, Camera & cam_2, bool _debug){
 //col-major e_11, e_21, e_31, e_12, e_22, e_32, e_13, e_23, e_33
 Eigen::MatrixXd map_Vect2Squaremat(Eigen::VectorXd & _vec){
     unsigned int dim = sqrt(_vec.size());
-    std::cout<<dim<<"dimension"<<std::endl;
+    // std::cout<<dim<<"dimension"<<std::endl;
     Eigen::MatrixXd sq_mat = Eigen::MatrixXd::Zero(dim, dim);
 
     for(unsigned int i = 0; i<dim; i++){
@@ -922,11 +917,11 @@ std::pair<Mats,Mats> possible_EuclidianTrans(Eigen::JacobiSVD<Eigen::MatrixXd> &
     Eigen::MatrixXd transU = U.transpose();
     Eigen::MatrixXd transV = V.transpose();
     Eigen::Matrix3d r_z_plus = rotaion_z(0.5*M_PI);
-    std::cout<<"r_z_plus"<<std::endl;
-    std::cout<<r_z_plus<<std::endl;
+    // std::cout<<"r_z_plus"<<std::endl;
+    // std::cout<<r_z_plus<<std::endl;
     Eigen::Matrix3d r_z_minus = rotaion_z((-1)*0.5*M_PI);
-    std::cout<<"r_z_minus"<<std::endl;
-    std::cout<<r_z_minus<<std::endl;
+    // std::cout<<"r_z_minus"<<std::endl;
+    // std::cout<<r_z_minus<<std::endl;
 
     Eigen::Matrix3d decomposed_sigma;
     // decomposed_sigma << 0, 1, 0,
@@ -1057,22 +1052,22 @@ Eigen::MatrixXd triangulation(std::pair<Mats, Mats> & _mats, Camera & cam1, Came
 
         _8points = 0;
 
-        std::cout<<"------------------Option_"<<i<<std::endl;
+        // std::cout<<"------------------Option_"<<i<<std::endl;
         // std::cout<<"Rotation"<<std::endl;
         // std::cout<<rotaion<<std::endl;
     
         // std::cout<<"Rotation"<<std::endl;
         // std::cout<<translation<<std::endl;
 
-        std::cout<<"Cam"<<cam1.id<<std::endl;
-        std::cout<<"KRT"<<std::endl;
-        std::cout<<_M1<<std::endl;
+        // std::cout<<"Cam"<<cam1.id<<std::endl;
+        // std::cout<<"KRT"<<std::endl;
+        // std::cout<<_M1<<std::endl;
 
-        std::cout<<"Cam"<<cam2.id<<std::endl;
-        std::cout<<"KRT"<<std::endl;
-        std::cout<<_M2<<std::endl;
+        // std::cout<<"Cam"<<cam2.id<<std::endl;
+        // std::cout<<"KRT"<<std::endl;
+        // std::cout<<_M2<<std::endl;
 
-        std::cout<<"-----------------Depth of the points------------"<<std::endl;
+        // std::cout<<"-----------------Depth of the points------------"<<std::endl;
 
         unsigned int _counter_depth_positive = 0;
         for(unsigned int s = 0; s<_flags.size(); s++){
@@ -1087,7 +1082,7 @@ Eigen::MatrixXd triangulation(std::pair<Mats, Mats> & _mats, Camera & cam1, Came
                 Eigen::MatrixXd skewMat_cam2Point = cam2.normalized_coords[s].skew_symmetric_mat();
                 system_Mat.block(0, 0, 3, 4) = skewMat_cam1Point * _M1;
                 system_Mat.block(3, 0, 3, 4) = skewMat_cam2Point * _M2;
-                std::cout<<"-----------"<<_8points<<"th point"<<"-----------"<<std::endl;
+                // std::cout<<"-----------"<<_8points<<"th point"<<"-----------"<<std::endl;
                 // std::cout<<system_Mat<<std::endl;
 
                 Eigen::JacobiSVD<Eigen::MatrixXd> svd(system_Mat, Eigen::ComputeThinU | Eigen::ComputeThinV);
@@ -1097,27 +1092,27 @@ Eigen::MatrixXd triangulation(std::pair<Mats, Mats> & _mats, Camera & cam1, Came
                 Eigen::MatrixXd svd_transV = svd.matrixV();
                 Eigen::VectorXd _point_in_cam1 = svd_transV.col(svd_transV.cols()-1);
 
-                std::cout<<"Corresponding point in cam"<<cam1.id<<"coordinate"<<std::endl;
-                std::cout<<_point_in_cam1<<std::endl;
-                std::cout<<"Depth of the coordinate in cam"<<cam1.id<<std::endl;
-                std::cout<<_point_in_cam1.z()<<std::endl;
+                // std::cout<<"Corresponding point in cam"<<cam1.id<<"coordinate"<<std::endl;
+                // std::cout<<_point_in_cam1<<std::endl;
+                // std::cout<<"Depth of the coordinate in cam"<<cam1.id<<std::endl;
+                // std::cout<<_point_in_cam1.z()<<std::endl;
 
                 Eigen::VectorXd cam1_Ncoords = cam1.normalized_coords[s].get_vector();
                 double depth = _point_in_cam1.z();
                 cam1_Ncoords *= depth;
                 Eigen::Vector4d homo_cam1_coordinate_mul_depth = {cam1_Ncoords.x(), cam1_Ncoords.y(), cam1_Ncoords.z(), 1.0};
 
-                std::cout<<"Normalized normalized coordinate in camera 1"<<std::endl;
-                std::cout<<homo_cam1_coordinate_mul_depth<<std::endl;
-                std::cout<<"Depth: "<<depth<<std::endl;
+                // std::cout<<"Normalized normalized coordinate in camera 1"<<std::endl;
+                // std::cout<<homo_cam1_coordinate_mul_depth<<std::endl;
+                // std::cout<<"Depth: "<<depth<<std::endl;
 
 
                 Eigen::VectorXd _point_in_cam2 = _cam2_SE3 * homo_cam1_coordinate_mul_depth;
 
-                std::cout<<"Corresponding point in cam"<<cam2.id<<"coordinate"<<std::endl;
-                std::cout<<_point_in_cam2<<std::endl;
-                std::cout<<"Depth of the coordinate in cam"<<cam2.id<<std::endl;
-                std::cout<<_point_in_cam2.z()<<std::endl;
+                // std::cout<<"Corresponding point in cam"<<cam2.id<<"coordinate"<<std::endl;
+                // std::cout<<_point_in_cam2<<std::endl;
+                // std::cout<<"Depth of the coordinate in cam"<<cam2.id<<std::endl;
+                // std::cout<<_point_in_cam2.z()<<std::endl;
 
                 if(_point_in_cam1.z() >= 0.0 && _point_in_cam2.z() >= 0.0){ //volume, or _transformed_coords.z()
                     _counter_depth_positive++;
@@ -1126,7 +1121,7 @@ Eigen::MatrixXd triangulation(std::pair<Mats, Mats> & _mats, Camera & cam1, Came
             }
         }
 
-        std::cout<<"System Matrix for triangulation"<<std::endl;
+        // std::cout<<"System Matrix for triangulation"<<std::endl;
 
         if(_counter_depth_positive == actual_num_corresp){
             result_satisfactly_RT[i] = true;
@@ -1134,9 +1129,9 @@ Eigen::MatrixXd triangulation(std::pair<Mats, Mats> & _mats, Camera & cam1, Came
         }
 
         if(result_satisfactly_RT[i]){
-            std::cout<<"------------------Option_"<<i<<"is the correct R|T"<<std::endl;
+            // std::cout<<"------------------Option_"<<i<<"is the correct R|T"<<std::endl;
         }else{
-            std::cout<<"------------------Option_"<<i<<"is the wrong R|T"<<std::endl;
+            // std::cout<<"------------------Option_"<<i<<"is the wrong R|T"<<std::endl;
         }
 
     }
@@ -1217,18 +1212,18 @@ Eigen::MatrixXd SFM(std::pair<Mats, Mats> & _mats, Camera & cam1, Camera & cam2,
 
         _counter = 0;
 
-        std::cout<<"------------------Option_"<<i<<std::endl;
-        std::cout<<"Rotation"<<std::endl;
-        std::cout<<rotaion<<std::endl;
-        std::cout<<"Determinant of rotation"<<std::endl;
-        std::cout<<rotaion.determinant()<<std::endl;
+        // std::cout<<"------------------Option_"<<i<<std::endl;
+        // std::cout<<"Rotation"<<std::endl;
+        // std::cout<<rotaion<<std::endl;
+        // std::cout<<"Determinant of rotation"<<std::endl;
+        // std::cout<<rotaion.determinant()<<std::endl;
     
-        std::cout<<"Rotation"<<std::endl;
-        std::cout<<translation<<std::endl;
-        std::cout<<"Norm of rotation"<<std::endl;
-        std::cout<<translation.norm()<<std::endl;
+        // std::cout<<"Rotation"<<std::endl;
+        // std::cout<<translation<<std::endl;
+        // std::cout<<"Norm of rotation"<<std::endl;
+        // std::cout<<translation.norm()<<std::endl;
 
-        std::cout<<"-----------------Depth of the points------------"<<std::endl;
+        // std::cout<<"-----------------Depth of the points------------"<<std::endl;
 
         Eigen::MatrixXd system_Mat = Eigen::MatrixXd::Zero(3*actual_num_corresp, actual_num_corresp + 1);
 
@@ -1256,8 +1251,8 @@ Eigen::MatrixXd SFM(std::pair<Mats, Mats> & _mats, Camera & cam1, Camera & cam2,
 
         }
 
-        std::cout<<"System matrix"<<std::endl;
-        std::cout<<system_Mat<<std::endl;
+        // std::cout<<"System matrix"<<std::endl;
+        // std::cout<<system_Mat<<std::endl;
         Eigen::MatrixXd SM = system_Mat.transpose()*system_Mat;
 
         Eigen::JacobiSVD<Eigen::MatrixXd> svd(SM, Eigen::ComputeThinU | Eigen::ComputeThinV);
@@ -1270,11 +1265,11 @@ Eigen::MatrixXd SFM(std::pair<Mats, Mats> & _mats, Camera & cam1, Camera & cam2,
         double translation_scaler = solution(solution.rows()-1);
         Eigen::VectorXd depth_incam1 = solution.block(0, 0, solution.rows()-1, 1);
 
-        std::cout<<"Depth in camera_"<<cam1.id<<" and scale of translation"<<std::endl;
-        std::cout<<solution<<std::endl;
+        // std::cout<<"Depth in camera_"<<cam1.id<<" and scale of translation"<<std::endl;
+        // std::cout<<solution<<std::endl;
 
-        std::cout<<"Depth list in cam_"<<cam1.id<<std::endl;
-        std::cout<<depth_incam1<<std::endl;
+        // std::cout<<"Depth list in cam_"<<cam1.id<<std::endl;
+        // std::cout<<depth_incam1<<std::endl;
         Eigen::MatrixXd _cam1_cam2_SE3 = Eigen::MatrixXd::Zero(3, 4);
         _cam1_cam2_SE3.block(0,0,3,3) = (stacked_R[i]);
         Eigen::VectorXd scaled_translation = 1.0 * translation;
@@ -1288,16 +1283,16 @@ Eigen::MatrixXd SFM(std::pair<Mats, Mats> & _mats, Camera & cam1, Camera & cam2,
             Eigen::Vector3d _point_in_cam1 = _vec_cam1_Ncoords[s];
             if(_flags[s]){
                 double _depth = depth_incam1(_counter);
-                std::cout<<_counter<<"th point in camera_"<<cam1.id<<std::endl;
-                std::cout<<_point_in_cam1<<std::endl;
+                // std::cout<<_counter<<"th point in camera_"<<cam1.id<<std::endl;
+                // std::cout<<_point_in_cam1<<std::endl;
                 Eigen::Vector4d homo_point_in_cam1 = {_point_in_cam1.x()*(_depth), _point_in_cam1.y()*(_depth), _point_in_cam1.z()*(_depth), 1.0};
-                std::cout<<"homogeneous coordinate"<<std::endl;
-                std::cout<<homo_point_in_cam1<<std::endl;
+                // std::cout<<"homogeneous coordinate"<<std::endl;
+                // std::cout<<homo_point_in_cam1<<std::endl;
 
                 Eigen::Vector3d _point_in_cam2 = _cam1_cam2_SE3 * homo_point_in_cam1;
 
-                std::cout<<_counter<<"th point in camera_"<<cam2.id<<std::endl;
-                std::cout<<_point_in_cam2<<std::endl;
+                // std::cout<<_counter<<"th point in camera_"<<cam2.id<<std::endl;
+                // std::cout<<_point_in_cam2<<std::endl;
                 
                 double _depth_in_cam2 = _point_in_cam2.z();
                 
@@ -1306,11 +1301,11 @@ Eigen::MatrixXd SFM(std::pair<Mats, Mats> & _mats, Camera & cam1, Camera & cam2,
 
                 if((_depth_in_cam2>0.0) && (_depth> 0.0)){
 
-                    std::cout<<"depth value in cam_"<<cam1.id<<std::endl;
-                    std::cout<<_depth<<std::endl;
+                    // std::cout<<"depth value in cam_"<<cam1.id<<std::endl;
+                    // std::cout<<_depth<<std::endl;
 
-                    std::cout<<"depth value in cam_"<<cam2.id<<std::endl;
-                    std::cout<<_depth_in_cam2<<std::endl;
+                    // std::cout<<"depth value in cam_"<<cam2.id<<std::endl;
+                    // std::cout<<_depth_in_cam2<<std::endl;
 
                     _counter_depth_positive++;
                 }
@@ -1325,7 +1320,7 @@ Eigen::MatrixXd SFM(std::pair<Mats, Mats> & _mats, Camera & cam1, Camera & cam2,
         }
 
         if(_counter_depth_positive == actual_num_corresp){
-            std::cout<<"------------------Option_"<<i<<"has CORRECT rotation and translation"<<std::endl;
+            // std::cout<<"------------------Option_"<<i<<"has CORRECT rotation and translation"<<std::endl;
             _correct_SE3 = _cam1_cam2_SE3;
             scaler_translation = translation_scaler;
 
@@ -1347,7 +1342,7 @@ Eigen::MatrixXd SFM(std::pair<Mats, Mats> & _mats, Camera & cam1, Camera & cam2,
 
 
         }else{
-            std::cout<<"------------------Option_"<<i<<"has WRONG rotation and translation"<<std::endl;
+            // std::cout<<"------------------Option_"<<i<<"has WRONG rotation and translation"<<std::endl;
         }
 
         cam1_depths.clear();
@@ -1375,25 +1370,25 @@ Eigen::MatrixXd find_relativePose(Camera & cam1, Camera & cam2, double & scaler_
     svd1.compute(System_mat);
 
     Eigen::MatrixXd svd1_transV = svd1.matrixV();
-    std::cout<<"Matrix U,shape"<<svd1.matrixU().rows()<<","<<svd1.matrixU().cols()<<std::endl;
-    std::cout<<"Matrix V,shape"<<svd1.matrixV().rows()<<","<<svd1.matrixV().cols()<<std::endl;
+    // std::cout<<"Matrix U,shape"<<svd1.matrixU().rows()<<","<<svd1.matrixU().cols()<<std::endl;
+    // std::cout<<"Matrix V,shape"<<svd1.matrixV().rows()<<","<<svd1.matrixV().cols()<<std::endl;
     
     Eigen::VectorXd _original_Es = svd1_transV.col(svd1_transV.cols()-1);
 
-    std::cout<<"Original Solution Es"<<std::endl;
-    std::cout<<_original_Es<<std::endl;
+    // std::cout<<"Original Solution Es"<<std::endl;
+    // std::cout<<_original_Es<<std::endl;
 
     Eigen::VectorXd _check_original_Es = ALPHA_cam1_cam2 * _original_Es;
-    std::cout<<"Check if the original Es is Kernel"<<std::endl;
-    std::cout<<_check_original_Es<<std::endl;
+    // std::cout<<"Check if the original Es is Kernel"<<std::endl;
+    // std::cout<<_check_original_Es<<std::endl;
 
     Eigen::MatrixXd _approx_Essential;
     _approx_Essential = map_Vect2Squaremat(_original_Es);
 
-    std::cout<<"-------Camera_"<<cam1.id<<" and  Camera_"<<cam2.id<<"-------------"<<std::endl;
+    // std::cout<<"-------Camera_"<<cam1.id<<" and  Camera_"<<cam2.id<<"-------------"<<std::endl;
 
-    std::cout<<"Obtain approx. Essential matrix"<<std::endl;
-    std::cout<<_approx_Essential<<std::endl;
+    // std::cout<<"Obtain approx. Essential matrix"<<std::endl;
+    // std::cout<<_approx_Essential<<std::endl;
 
     //Map approx. Essential onto Essential space
     Eigen::JacobiSVD<Eigen::MatrixXd> svd2(_approx_Essential, Eigen::ComputeThinU | Eigen::ComputeThinV);
@@ -1408,31 +1403,31 @@ Eigen::MatrixXd find_relativePose(Camera & cam1, Camera & cam2, double & scaler_
     // _sv_EssesMap.diagonal() << average_variance, average_variance, 0.0;
     // _sv_EssesMap.diagonal() = _singularValues;
     _sv_EssesMap(2, 2) = 0;
-    std::cout<<"_sv_EssesMap"<<std::endl;
-    std::cout<<_sv_EssesMap<<std::endl;
+    // std::cout<<"_sv_EssesMap"<<std::endl;
+    // std::cout<<_sv_EssesMap<<std::endl;
 
     Eigen::MatrixXd svd2_U = svd2.matrixU();
     Eigen::MatrixXd svd2_V = svd2.matrixV();
     if(svd2_U.determinant() < 0.0){
-        std::cout<<"svd2 U matrix determinant is negative: "<<svd2_U.determinant()<<std::endl;
+        // std::cout<<"svd2 U matrix determinant is negative: "<<svd2_U.determinant()<<std::endl;
         svd2_U *= -1;
-        std::cout<<"svd2 U matrix determinant is negative: "<<svd2_U.determinant()<<std::endl;
+        // std::cout<<"svd2 U matrix determinant is negative: "<<svd2_U.determinant()<<std::endl;
     }
 
     if(svd2_V.determinant() < 0.0){
-        std::cout<<"svd2 V matrix determinant is negative: "<<svd2_V.determinant()<<std::endl;
+        // std::cout<<"svd2 V matrix determinant is negative: "<<svd2_V.determinant()<<std::endl;
         svd2_V *= -1;
-        std::cout<<"svd2 V matrix determinant is negative: "<<svd2_U.determinant()<<std::endl;
+        // std::cout<<"svd2 V matrix determinant is negative: "<<svd2_U.determinant()<<std::endl;
     }
 
     // //Mapped essential matrix
     Eigen::MatrixXd _mapped_Es =svd2_U * _sv_EssesMap * svd2_V.transpose();
     // Eigen::MatrixXd _mapped_Es = _approx_Essential;
-    std::cout<<"Mirrored essential matrix"<<std::endl;
-    std::cout<<svd2_U * svd2.singularValues().asDiagonal() * svd2_V.transpose()<<std::endl;
+    // std::cout<<"Mirrored essential matrix"<<std::endl;
+    // std::cout<<svd2_U * svd2.singularValues().asDiagonal() * svd2_V.transpose()<<std::endl;
 
-    std::cout<<"Essential Matrix in essential space"<<std::endl;
-    std::cout<<_mapped_Es<<std::endl;
+    // std::cout<<"Essential Matrix in essential space"<<std::endl;
+    // std::cout<<_mapped_Es<<std::endl;
 
     Mats potential_R;
     Mats potential_ssmT;
@@ -1481,8 +1476,7 @@ Eigen::Vector3d global_scaled_translation(std::vector<Camera> & cameras, Eigen::
         }
     }
 
-    Eigen::MatrixXd _sm = Eigen::MatrixXd::Zero(3 * actual_num_corresp, 2);
-    Eigen::VectorXd B = Eigen::VectorXd::Zero(3 * actual_num_corresp);
+    Eigen::MatrixXd _sm = Eigen::MatrixXd::Zero(3 * actual_num_corresp, actual_num_corresp + 2);
     
     unsigned int _row_counter= 0;
     for(unsigned int s=0; s<num_given_corresp; s++){
@@ -1495,60 +1489,85 @@ Eigen::Vector3d global_scaled_translation(std::vector<Camera> & cameras, Eigen::
             Eigen::MatrixXd X0R10T21 = skewMat_cam0 * R10 * T21;
             Eigen::MatrixXd X0T10 = skewMat_cam0 * T10;
 
-            std::cout<<"X2R21T10"<<std::endl;
-            std::cout<<X0R10T21<<std::endl;
+            // std::cout<<"X2R21T10"<<std::endl;
+            // std::cout<<X0R10T21<<std::endl;
 
-            std::cout<<"X0T10"<<std::endl;
-            std::cout<<X0T10<<std::endl;
+            // std::cout<<"X0T10"<<std::endl;
+            // std::cout<<X0T10<<std::endl;
 
-            _sm.block(3*_row_counter, 0, 3, 1) = X0R10T21;
-            _sm.block(3*_row_counter, 1, 3, 1) = X0T10;
+            _sm.block(3*_row_counter, _sm.cols()-2, 3, 1) = X0R10T21;
+            _sm.block(3*_row_counter, _sm.cols()-1, 3, 1) = X0T10;
 
             double _depth_in_cam2 = cam2->withDepth_normalized_coords[s].depth;
             Eigen::Vector3d _normalizedC_in_cam2 = cam2->normalized_coords[s].get_vector();
-            std::cout<<"Normalized coordinate in camera0"<<std::endl;
-            std::cout<<_normalizedC_in_cam2<<std::endl;
-            std::cout<<"depth in camera 0"<<std::endl;
-            std::cout<<_depth_in_cam2<<std::endl;
+            // std::cout<<"Normalized coordinate in camera0"<<std::endl;
+            // std::cout<<_normalizedC_in_cam2<<std::endl;
+            // std::cout<<"depth in camera 0"<<std::endl;
+            // std::cout<<_depth_in_cam2<<std::endl;
         
-            Eigen::Vector3d _coeff_in_B = (-1)*skewMat_cam0*R10*R21*_depth_in_cam2*_normalizedC_in_cam2;
+            Eigen::Vector3d _coeff_in_B = skewMat_cam0*R10*R21*_normalizedC_in_cam2;
+            _sm.block(3 * _row_counter, _row_counter, 3, 1) = _coeff_in_B;
 
-            B.block(3*_row_counter, 0, 3, 1) = _coeff_in_B;
             _row_counter++;
         }
     }
 
-    std::cout<<"System matrix"<<std::endl;
-    std::cout<<_sm<<std::endl;
-    std::cout<<"Right hand side B"<<std::endl;
-    std::cout<<B<<std::endl;
+    // std::cout<<"System matrix"<<std::endl;
+    // std::cout<<_sm<<std::endl;
+    // std::cout<<"Right hand side B"<<std::endl;
+    // std::cout<<B<<std::endl;
 
     Eigen::MatrixXd SM = _sm.transpose()*_sm;
-    Eigen::VectorXd rhs = _sm.transpose()*B;
+    // Eigen::VectorXd rhs = _sm.transpose()*B;
 
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(SM, Eigen::ComputeThinU | Eigen::ComputeThinV); 
 
-    std::cout<<"Linear LS solution"<<std::endl;
-    auto x = svd.solve(rhs);
-    std::cout<<x<<std::endl;
-    // Eigen::MatrixXd V = svd.matrixV();
-    Eigen::VectorXd solution_m = x;
+    // std::cout<<"Linear LS solution"<<std::endl;
 
-    std::cout<<"Scale of the translation"<<std::endl;
-    std::cout<<solution_m<<std::endl;
+    // std::cout<<x<<std::endl;
+    Eigen::MatrixXd V = svd.matrixV();
+    Eigen::VectorXd solution_m = V.col(V.cols()-1);
 
-    double scaler_T21 = solution_m(0);
-    double scaler_T10 = solution_m(1);
+    // std::cout<<"solution"<<std::endl;
+    // std::cout<<solution_m<<std::endl;
 
-    std::cout<<"Scaled addition of T21 and T10"<<std::endl;
+    bool depth_are_not_negative = false;
+    for(unsigned int i = 0; i<actual_num_corresp; i++){
+        double * d = &(solution_m(i));
+        if(*d < 0.0){
+            depth_are_not_negative = true;
+        }
+    }
+
+    if(depth_are_not_negative){
+        solution_m*=-1;
+        // std::cout<<"Depth are not positive"<<std::endl;
+        // std::cout<<"Flipped solution"<<std::endl;
+        // std::cout<<solution_m<<std::endl;
+    }
+
+
+
+    double scaler_T21 = solution_m(solution_m.rows()-2);
+    double scaler_T10 = solution_m(solution_m.rows()-1);
+
+    // std::cout<<"Scaled addition of T21 and T10"<<std::endl;
     translation = R10 * (T21 * scaler_T21) + T10 * scaler_T10;
-    std::cout<<translation<<std::endl;
-    std::cout<<"Normalized scaled T20"<<std::endl;
-    std::cout<<translation/translation.norm()<<std::endl;
+    // std::cout<<translation<<std::endl;
+    // std::cout<<"Normalized scaled T20"<<std::endl;
+    // std::cout<<translation/translation.norm()<<std::endl;
 
     translation /=translation.norm();
+
+    Eigen::MatrixXd R20 = R10 * R21;
+    Eigen::VectorXd T20 = translation;
+
+
+
+
     return translation;
 }
+
 
 int main(int argc, char const *argv[])
 {
@@ -1580,14 +1599,14 @@ int main(int argc, char const *argv[])
 
     Eigen::MatrixXd relativePose4x4_cam1_0 = find_relativePose(cameras[1], cameras[0], scaler_T12, cam2_SE3, DEBUG);
 
-    std::cout<<"---------------------------------------"<<std::endl;
-    std::cout<<"Relative pose from camera 2 to camera 1"<<std::endl;
-    std::cout<<relativePose4x4_cam2_1<<std::endl;
+    // std::cout<<"---------------------------------------"<<std::endl;
+    // std::cout<<"Relative pose from camera 2 to camera 1"<<std::endl;
+    // std::cout<<relativePose4x4_cam2_1<<std::endl;
 
-    std::cout<<"Relative pose from camera 1 to camera 0"<<std::endl;
-    std::cout<<relativePose4x4_cam1_0<<std::endl;
+    // std::cout<<"Relative pose from camera 1 to camera 0"<<std::endl;
+    // std::cout<<relativePose4x4_cam1_0<<std::endl;
 
-    std::cout<<"---------------------------------------"<<std::endl;
+    // std::cout<<"---------------------------------------"<<std::endl;
 
     Eigen::Matrix3d R21 = relativePose4x4_cam2_1.block(0, 0, 3, 3);
     // Eigen::Matrix3d R21 = R12.transpose();
