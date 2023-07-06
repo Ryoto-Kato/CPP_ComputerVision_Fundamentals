@@ -45,9 +45,9 @@ Eigen::Matrix3d Vector2SkewMat(Eigen::Vector3d & vector){
 }
 
 
-Eigen::Vector<double, Eigen::Dynamic> standardVect2eigenVect(std::vector<double> & std_vect){
+Eigen::VectorXd standardVect2eigenVect(std::vector<double> & std_vect){
     unsigned int num_vect = std_vect.size();
-    Eigen::Vector<double, Eigen::Dynamic>  eigenVect = Eigen::Vector<double, Eigen::Dynamic>::Zero(num_vect);
+    Eigen::VectorXd  eigenVect = Eigen::VectorXd::Zero(num_vect);
     for(unsigned int i = 0; i<num_vect; i++){
         eigenVect(i) = std_vect[i];
     }
@@ -824,8 +824,8 @@ Eigen::MatrixXd getJacobian(std::vector<Point3D> world_coords, Eigen::MatrixXd m
 
         dr_camParam(1, 0) = 0.0;
         dr_camParam(1, 1) = EDP3.y()/EDP3.z();
-        dr_camParam(1, 2) = 1.0;
-        dr_camParam(1, 3) = 0.0;
+        dr_camParam(1, 2) = 0.0;
+        dr_camParam(1, 3) = 1.0;
 
         if(_debug){
             std::cout<<"dr_camParam"<<std::endl;
@@ -947,8 +947,9 @@ int main(int argc, char const *argv[])
         Eigen::Vector2d projected_uv_coords;
         projected_uv_coords << projected_image_coords[0]/projected_image_coords[2], projected_image_coords[1]/projected_image_coords[2]; 
         Eigen::VectorXd _ith_residual = projected_uv_coords - pixel_coords[i].vect_uv_coords();
-        double norm_ith_residual = _ith_residual.norm();
-        residual_list.push_back(norm_ith_residual);
+        // double norm_ith_residual = _ith_residual.norm();
+        residual_list.push_back(_ith_residual.x());
+        residual_list.push_back(_ith_residual.y());
     }
 
 

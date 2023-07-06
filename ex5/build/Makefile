@@ -129,29 +129,29 @@ exercise_5/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_5.dir/build.make CMakeFiles/exercise_5.dir/build
 .PHONY : exercise_5/fast
 
-ex1.o: ex1.cpp.o
-.PHONY : ex1.o
+ex2.o: ex2.cpp.o
+.PHONY : ex2.o
 
 # target to build an object file
-ex1.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_5.dir/build.make CMakeFiles/exercise_5.dir/ex1.cpp.o
-.PHONY : ex1.cpp.o
+ex2.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_5.dir/build.make CMakeFiles/exercise_5.dir/ex2.cpp.o
+.PHONY : ex2.cpp.o
 
-ex1.i: ex1.cpp.i
-.PHONY : ex1.i
+ex2.i: ex2.cpp.i
+.PHONY : ex2.i
 
 # target to preprocess a source file
-ex1.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_5.dir/build.make CMakeFiles/exercise_5.dir/ex1.cpp.i
-.PHONY : ex1.cpp.i
+ex2.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_5.dir/build.make CMakeFiles/exercise_5.dir/ex2.cpp.i
+.PHONY : ex2.cpp.i
 
-ex1.s: ex1.cpp.s
-.PHONY : ex1.s
+ex2.s: ex2.cpp.s
+.PHONY : ex2.s
 
 # target to generate assembly for a file
-ex1.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_5.dir/build.make CMakeFiles/exercise_5.dir/ex1.cpp.s
-.PHONY : ex1.cpp.s
+ex2.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/exercise_5.dir/build.make CMakeFiles/exercise_5.dir/ex2.cpp.s
+.PHONY : ex2.cpp.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... exercise_5"
-	@echo "... ex1.o"
-	@echo "... ex1.i"
-	@echo "... ex1.s"
+	@echo "... ex2.o"
+	@echo "... ex2.i"
+	@echo "... ex2.s"
 .PHONY : help
 
 

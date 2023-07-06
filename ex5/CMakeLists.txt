@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 # set(SOURCES ex1.cpp)
-set(SOURCES ex1.cpp)
+set(SOURCES ex2.cpp)
 
 find_package(Eigen3 REQUIRED)
 
