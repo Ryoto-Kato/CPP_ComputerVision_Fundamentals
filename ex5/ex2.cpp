@@ -6,8 +6,11 @@
 #include <vector>
 #include <memory>
 #include <iterator>
+#include <algorithm>
 
-#define DEBUG 1
+#define DEBUG 0
+#define DEBUG1 0
+#define FINAL 1
 
 auto print_vect=[](auto const & v){
     std::copy(v.begin(), v.end(), std::ostream_iterator<int>(std::cout, " "));
@@ -32,7 +35,7 @@ Eigen::MatrixXd se3_Vector2Skew(std::vector<double> & vect){
     mat << 0, (-1)*(*gamma), (*beta), *t_x,
         (*gamma), 0, (-1)*(*alpha), *t_y,
         -1*(*beta), (*alpha), 0, *t_z,
-        0, 0, 0, 1;
+        0, 0, 0, 0;
     return mat;
 }
 
@@ -348,6 +351,13 @@ public:
     Center _center;
     Intrinsic_params(double f_x, double f_y, double c_x, double c_y): _focal(f_x, f_y), _center(c_x, c_y){}
     ~Intrinsic_params(){}
+
+    void update_params(double f_x, double f_y, double c_x, double c_y){
+        _focal.x = f_x;
+        _focal.y = f_y;
+        _center.x = c_x;
+        _center.y = c_y;
+    }
 };
 
 class Camera
@@ -417,6 +427,23 @@ public:
         std::cout<<extrinsic<<std::endl;
 
         std::cout<<"----------------------------------------"<<std::endl;
+    }
+
+    void print_intrinsicMat(){
+        std::cout<<intrinsic<<std::endl;
+    }
+
+    void print_extrinsicMat(){
+        std::cout<<extrinsic.block(0,0,3,4)<<std::endl;
+    }
+
+    void update_IntrinsicExtrinsic(Eigen::MatrixXd _intrinsic, Eigen::MatrixXd _extrinsic){
+        intrinsic = _intrinsic;
+        extrinsic = _extrinsic;
+    }
+    
+    void update_intrinsic_params(double focal_x, double focal_y, double center_x, double center_y){
+        _intrinsic_params.update_params(focal_x, focal_y, center_x, center_y);
     }
 };
 
@@ -741,33 +768,69 @@ void camera_calibration(std::vector<Point3D> & world_coords, std::vector<Point2D
 
 }
 
+bool is_all_zeroVect(std::vector<double> & vect){
+    bool is_all_zero = true;
+    for(auto & item: vect){
+        if(item != 0.0){
+            is_all_zero = false;
+        }
+    }
+    return is_all_zero;
+}
+
+bool is_all_close2Zero(std::vector<double> & vect){
+    bool is_almostall_zero = false;
+    for(auto & item: vect){
+        if(abs(item) < 1e-3){
+            is_almostall_zero = true;
+        }
+    }
+    return is_almostall_zero;
+}
+
 Eigen::MatrixXd se3toSE3(std::vector<double> & vect_se3,bool _debug){
     Eigen::MatrixXd sigma_hat = se3_Vector2Skew(vect_se3);
     Eigen::MatrixXd mat_SE3;
-    if(sigma_hat.determinant() == 0){
+    if(is_all_zeroVect(vect_se3)){
         mat_SE3= Eigen::MatrixXd::Identity(3, 4);
     }else{
         Eigen::MatrixXd w_hat = sigma_hat.block(0, 0, 3, 3);
         Eigen::Vector3d translation_se3;
         translation_se3<<vect_se3[0], vect_se3[1], vect_se3[2];
+        std::vector<double> translation_vector = {vect_se3[0], vect_se3[1], vect_se3[2]};
+
         Eigen::Vector3d rotation_se3;
-        rotation_se3<<vect_se3[3], vect_se3[4], vect_se3[5];  
+        rotation_se3<<vect_se3[3], vect_se3[4], vect_se3[5];
+        std::vector<double> rotation_vector = {vect_se3[3], vect_se3[4], vect_se3[5]};
+
         double norm_rotation_vect_se3 = rotation_se3.norm();
         double sin_norm_w = sin(norm_rotation_vect_se3);
         double cos_norm_w = cos(norm_rotation_vect_se3);
 
-        Eigen::MatrixXd identity = Eigen::MatrixXd::Ones(3, 3);
+        Eigen::MatrixXd identity = Eigen::MatrixXd::Identity(3, 3);
         //exp_w_hat = 3x3
         Eigen::MatrixXd exp_w_hat;
-        exp_w_hat = identity + (w_hat/norm_rotation_vect_se3) * sin_norm_w + (w_hat/norm_rotation_vect_se3)*(w_hat/norm_rotation_vect_se3) * (1 - cos_norm_w);
-
-        //translation = 3x1
-        Eigen::Vector3d exp_translation;
-        exp_translation = ((identity - exp_w_hat) * w_hat * translation_se3 + rotation_se3 * rotation_se3.transpose() * translation_se3)/(norm_rotation_vect_se3 * norm_rotation_vect_se3);
+        exp_w_hat = identity + (w_hat/norm_rotation_vect_se3) * sin_norm_w + ((w_hat*w_hat)/(norm_rotation_vect_se3*norm_rotation_vect_se3)) * (1 - cos_norm_w);
 
         //final SE3
         mat_SE3 = Eigen::MatrixXd::Zero(3, 4);
+
+        if(is_all_close2Zero(rotation_vector)){
+            exp_w_hat = Eigen::MatrixXd::Identity(3, 3);
+        }
+
         mat_SE3.block(0, 0, 3, 3) = exp_w_hat;
+
+        //translation = 3x1
+        Eigen::Vector3d exp_translation;
+        // exp_translation = ((identity - exp_w_hat) * w_hat * translation_se3 + rotation_se3 * rotation_se3.transpose() * translation_se3)/(norm_rotation_vect_se3 * norm_rotation_vect_se3);
+        Eigen::MatrixXd V = identity + (w_hat*(1-cos_norm_w)/(pow(norm_rotation_vect_se3, 2))) + ((w_hat*w_hat)*(norm_rotation_vect_se3 - sin(norm_rotation_vect_se3))/pow(norm_rotation_vect_se3, 3));
+        exp_translation = V*translation_se3;
+
+        // if(is_all_close2Zero(translation_vector)){
+        //     exp_translation << 0, 0, 0;
+        // }
+        
         mat_SE3.block(0, 3, 3, 1) = exp_translation;
 
         if(_debug){
@@ -930,68 +993,101 @@ int main(int argc, char const *argv[])
     Camera cam(Intrinsic, Extrinsic);
 
     // Check if the reader works
-    if(DEBUG){
+    if(DEBUG1){
         cam.print_params();
     }
 
-    // get vector containing intrinsic parameter (4 dim) 
-    // fx, fy, cx, cy
-    Eigen::Vector4d intrinsic_paramVect = {cam._intrinsic_params._focal.x, cam._intrinsic_params._focal.y, cam._intrinsic_params._center.x, cam._intrinsic_params._center.y};
-
     //t_x, t_y, t_z, alpha, beta, gamma;
     std::vector<double> vect_se3 = {0, 0, 0, 0, 0, 0};
-    // //Exponential map of se3 to get SE3
-    Eigen::MatrixXd mat_SE3 = se3toSE3(vect_se3, DEBUG);
-
-    //where sigma = 0
-    // Eigen::MatrixXd mat_SE3 = Eigen::MatrixXd::Identity(3, 4);
     
-    if(DEBUG){
-        std::cout<<"Mat SE3"<<std::endl;
-        std::cout<<mat_SE3<<std::endl;
-    }
-
     //pixel coordinate and world coordinate
 
-    // residuals
-    std::vector<double> residual_list;
-    for(unsigned int i = 0; i < num_vertex; i++){
-        // std::cout<<(cam.intrinsic * (matSE3 * cam.extrinsic * world_coords[i]._vector()))<<std::endl;
-        // std::cout<<(cam.intrinsic * (mat_SE3 * cam.extrinsic * world_coords[i]._vector()))<<std::endl;
-        Eigen::VectorXd projected_image_coords = cam.intrinsic * (mat_SE3 * cam.extrinsic * world_coords[i]._vector());
-        Eigen::Vector2d projected_uv_coords;
-        projected_uv_coords << projected_image_coords[0]/projected_image_coords[2], projected_image_coords[1]/projected_image_coords[2]; 
-        Eigen::VectorXd _ith_residual = projected_uv_coords - pixel_coords[i].vect_uv_coords();
-        // double norm_ith_residual = _ith_residual.norm();
-        residual_list.push_back(_ith_residual.x());
-        residual_list.push_back(_ith_residual.y());
-    }
+    unsigned int max_iteration = 10;
+    unsigned int cnt = 0;
+
+    while(cnt < max_iteration){
+
+        // std::cout<<"==================="<<cnt<<"_iter"<<"===================="<<std::endl;
+        
+        // exponential map
+        Eigen::MatrixXd mat_SE3 = se3toSE3(vect_se3, DEBUG1);
+
+        // get vector containing intrinsic parameter (4 dim) 
+        // fx, fy, cx, cy
+        Eigen::Vector4d intrinsic_paramVect = {cam._intrinsic_params._focal.x, cam._intrinsic_params._focal.y, cam._intrinsic_params._center.x, cam._intrinsic_params._center.y};
+
+        // residuals
+        std::vector<double> residual_list;
+        for(unsigned int i = 0; i < num_vertex; i++){
+            // std::cout<<(cam.intrinsic * (matSE3 * cam.extrinsic * world_coords[i]._vector()))<<std::endl;
+            // std::cout<<(cam.intrinsic * (mat_SE3 * cam.extrinsic * world_coords[i]._vector()))<<std::endl;
+            Eigen::VectorXd projected_image_coords = cam.intrinsic * (mat_SE3 * cam.extrinsic * world_coords[i]._vector());
+            Eigen::Vector2d projected_uv_coords;
+            projected_uv_coords << projected_image_coords[0]/projected_image_coords[2], projected_image_coords[1]/projected_image_coords[2]; 
+            Eigen::VectorXd _ith_residual = projected_uv_coords - pixel_coords[i].vect_uv_coords();
+            // double norm_ith_residual = _ith_residual.norm();
+            residual_list.push_back(_ith_residual.x());
+            residual_list.push_back(_ith_residual.y());
+        }
 
 
-    Eigen::VectorXd residual_vect = standardVect2eigenVect(residual_list);
+        Eigen::VectorXd residual_vect = standardVect2eigenVect(residual_list);
 
-    Eigen::MatrixXd Jacobian = getJacobian(world_coords, mat_SE3, cam, DEBUG);
+        Eigen::MatrixXd Jacobian = getJacobian(world_coords, mat_SE3, cam, DEBUG);
 
-    //get delta vector (10 dim) (this is already multiplied with minus)
-    Eigen::VectorXd delta = (-1) * (Jacobian.transpose() * Jacobian).inverse() * Jacobian.transpose() * residual_vect;
+        //get delta vector (10 dim) (this is already multiplied with minus)
+        Eigen::VectorXd delta = (-1) * (Jacobian.transpose() * Jacobian).inverse() * Jacobian.transpose() * residual_vect;
 
-    if(DEBUG){
-        std::cout<<"delta"<<std::endl;
-        std::cout<<delta<<std::endl;
-    }
+        if(DEBUG1){
+            std::cout<<"delta"<<std::endl;
+            std::cout<<delta<<std::endl;
+        }
 
-    // update intrinsic parameter
-    Eigen::Vector4d updated_intrinsic_paramVect = intrinsic_paramVect + delta.block(0, 0, 4, 1);
-    Eigen::MatrixXd update_intrinsic_paramMat = instant_camIntrinsic_generator(updated_intrinsic_paramVect);
-    
-    if(DEBUG){
-        std::cout<<"Updated intrinsic params"<<std::endl;
-        std::cout<<update_intrinsic_paramMat<<std::endl;
-    }
+        // update intrinsic parameter
+        Eigen::Vector4d updated_intrinsic_paramVect = intrinsic_paramVect + delta.block(0, 0, 4, 1);
+        Eigen::MatrixXd updated_cam_intrinsic = instant_camIntrinsic_generator(updated_intrinsic_paramVect);
+        
+        if(DEBUG){
+            std::cout<<"Updated intrinsic params"<<std::endl;
+            std::cout<<updated_cam_intrinsic<<std::endl;
+        }
 
-    if(DEBUG){
-        std::cout<<"residual list"<<std::endl;
-        std::cout<<residual_vect.transpose()<<std::endl;
+        // update rotation
+        std::vector<double> delta_eps;
+
+        // std::cout<<"delta epsilon"<<std::endl;
+        for(unsigned int i = 0; i<6; i++){
+            delta_eps.push_back(delta(i+4));
+            //update eps for next iteration
+            vect_se3[i] += delta_eps[i];
+            // std::cout<<delta_eps[i]<<std::endl;
+        }
+
+        Eigen::MatrixXd mat_SE3_delta_eps = se3toSE3(vect_se3, DEBUG1);
+        // std::cout<<"camera extrinsic"<<std::endl;
+        // std::cout<<cam.extrinsic<<std::endl;
+        Eigen::MatrixXd updated_rotation = cam.extrinsic.block(0,0,3,3);
+        Eigen::MatrixXd updated_translation = mat_SE3_delta_eps * cam.extrinsic.block(0, 3, 4, 1);
+        Eigen::Matrix4d updated_cam_extrinsic = Eigen::MatrixXd::Identity(4, 4);
+        updated_cam_extrinsic.block(0,0,3,3) = updated_rotation;
+        updated_cam_extrinsic.block(0,3,3,1) = updated_translation;
+
+        //update extrinsic and intrinsic at the end of iteration
+
+        cam.update_IntrinsicExtrinsic(updated_cam_intrinsic, updated_cam_extrinsic);
+        double * focal_x = &updated_cam_intrinsic(0,0);
+        double * focal_y = &updated_cam_intrinsic(1,1);
+        double * center_x = &updated_cam_intrinsic(0,2);
+        double * center_y = &updated_cam_intrinsic(1,2);
+        cam.update_intrinsic_params(*focal_x, *focal_y, *center_x, *center_y);
+
+        if(FINAL){
+            cam.print_intrinsicMat();
+            std::cout<<std::endl;
+            cam.print_extrinsicMat();
+            std::cout<<'\n'<<std::endl;
+        }
+        cnt++;
     }
 
     // camera_calibration(world_coords, pixel_coords, DEBUG);
