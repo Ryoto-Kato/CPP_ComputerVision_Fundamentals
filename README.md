@@ -1,2 +1,5 @@
-# Submission
-[link](https://domjudge.cvg.cit.tum.de/team/problems)
+# c++ Computer vision fundamentals
+- Requirements
+    - Eigen C++ library
+    - CMAKE
+
